@@ -1,0 +1,5 @@
+flask
+chromadb
+langchain
+langchain-community
+pypdf
