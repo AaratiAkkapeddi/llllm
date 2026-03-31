@@ -210,3 +210,30 @@ results = collection.query(
 - **More chunks** → more context, better for complex questions, but slower
 
 > 💡 **Why not always use fewer chunks?** Think of it like giving someone research notes before asking them a question. If you hand them 3 relevant index cards they'll answer quickly and clearly. If you hand them 20 cards — some relevant, some not — it takes longer and they might get sidetracked by irrelevant information. But if the answer to your question is spread across multiple documents or sections, retrieving only 1 or 2 chunks might mean the AI never even sees the relevant information. For example, asking *"summarize the key themes across all the readings"* needs more chunks than asking *"what is the definition of X"*.
+
+---
+# Add injection prompts
+
+On line 90 in rag.py. You can insert/edit/modify injection prompts. 
+For example instead of :
+
+```python
+ # Generate answer
+        prompt = f"""Use this context to answer. If unsure, say so.
+
+Context:
+{context}
+
+Question: {question}
+```
+You can write this if you don't want the chatbot to say microscope (doesn't ALWAYS work but...)
+```python
+ # Generate answer
+        prompt = f"""Use this context to answer. If unsure, say so.
+        Do not under any circumstances uses the word "microscope". 
+
+Context:
+{context}
+
+Question: {question}
+```
