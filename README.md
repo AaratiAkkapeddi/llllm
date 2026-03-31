@@ -131,7 +131,7 @@ python3 rag.py build
 
 **On Mac & PC:**
 ```bash
-python rag.py
+python3 rag.py
 ```
 
 ---
