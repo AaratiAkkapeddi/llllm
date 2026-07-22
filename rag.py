@@ -86,8 +86,8 @@ class SimpleRAG:
         # Build context
         context = "\n\n".join(results['documents'][0])
 
-        # Generate answer
-        prompt = f"""Use this context to answer. If unsure, say so.
+        # Generate answer YOU CAN ADD 'secret' prompt instructions here if you want to guide the model's behavior further
+        prompt = f"""Use this context to answer. If unsure, say so. 
 
 Context:
 {context}

@@ -2,7 +2,7 @@
 
 ## Before You Begin
 
-You should know that nearly all this python code was written by [Ambika Joshi (aka Computational Mama)](https://computationalmama.xyz/) who will also be joining our class as a guest lecturer on April 20th :-)
+You should know that nearly all this python code was written by my friend [Ambika Joshi (aka Computational Mama)](https://computationalmama.xyz/) 
 
 ### What is Ollama?
 Ollama lets you run AI models locally on your own computer, meaning your data never leaves your machine and you don't need an internet connection or API key to use it.

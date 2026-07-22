@@ -5,6 +5,7 @@
 **some guidelines:**
 
 - Your PDFs should each be only a maximum of 30 pages (this is to avoid long build times). So if you have one that's really long, you should split it up into multiple pdfs,
+- It does better with QA formatted text.
 - In total across all your pdfs, you want to have a minimum of 50–100 pages (to get decent results) and no more than 300–500 pages (to avoid slow process time)
 - But besides that range, it really depends on the context of the content and the relationship between your pdfs. So some trial and error is definitely involved.
 
