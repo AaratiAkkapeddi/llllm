@@ -87,7 +87,7 @@ ollama serve
 
 > 💡 You'll need to keep this terminal window open the whole time. Open a **new** terminal window for the next steps.
 
-> 💡 On Mac you can also run `brew services start ollama` to have it start automatically every time you log in, so you never have to think about it.
+> 💡 If you get this error 'bind: address already in use' or this error 'bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.' Try going to http://localhost:11434/ in your browser. If it says ollama is running you can just skip to the next step.
 
 ---
 
@@ -111,7 +111,7 @@ Navigate to your project folder (see Step 2), then run:
 ```bash
 pip3 install -r requirements.txt
 ```
-
+> 💡 If you get error: externally-managed-environment you may need to use a virtual environment. To do that type `python3 -m venv handmade_datasets_venv` in terminal and then after type `source ./.handmade_datasets_venv/bin/activate` You may then need to install pip (brew install pip).
 
 ---
 
@@ -123,7 +123,7 @@ Drop your PDFs into the `./docs/` folder first, then:
 ```bash
 python3 rag.py build
 ```
-
+> 💡 If you get the error: No module named 'langchain.text_splitter' try changing that code in rag.py from `langchain.text_splitter` to `langchain_text_splitters`
 
 ---
 
