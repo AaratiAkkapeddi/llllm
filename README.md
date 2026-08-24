@@ -111,7 +111,7 @@ Navigate to your project folder (see Step 2), then run:
 ```bash
 pip3 install -r requirements.txt
 ```
-> 💡 If you get error: externally-managed-environment you may need to use a virtual environment. To do that type `python3 -m venv handmade_datasets_venv` in terminal and then after type `source ./.handmade_datasets_venv/bin/activate` You may then need to install pip (brew install pip).
+> 💡 If you get error: externally-managed-environment you may need to use a virtual environment. To do that type `python3 -m venv handmade_datasets_venv` in terminal and then after type `source ./handmade_datasets_venv/bin/activate` You may then need to install pip (brew install pip).
 
 ---
 
