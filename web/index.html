@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My funky custom chatbot</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header>My funky custom chatbot</header>
+<div id="log"></div>
+<form id="form">
+  <input id="q" placeholder="Ask about your documents…" autocomplete="off" autofocus>
+  <button>Send</button>
+</form>
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const q = document.getElementById("q");
+
+function add(text, cls, sources) {
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  d.textContent = text;
+  if (sources) {
+    const s = document.createElement("span");
+    s.className = "src";
+    s.textContent = "Sources: " + sources;
+    d.appendChild(s);
+  }
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+  return d;
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const question = q.value.trim();
+  if (!question) return;
+  q.value = "";
+  add(question, "user");
+  const pending = add("Thinking…", "bot");
+  try {
+    const r = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    });
+    const data = await r.json();
+    pending.remove();
+    add(data.error ? "Error: " + data.error : data.answer, "bot", data.sources);
+  } catch (err) {
+    pending.remove();
+    add("Error: " + err.message, "bot");
+  }
+});
+</script>
+</body>
+</html>

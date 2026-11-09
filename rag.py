@@ -6,10 +6,14 @@ No server, no internet required after setup
 
 import chromadb
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.llms import Ollama
 import os
+import json
+import mimetypes
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class SimpleRAG:
     def __init__(self):
@@ -86,8 +90,8 @@ class SimpleRAG:
         # Build context
         context = "\n\n".join(results['documents'][0])
 
-        # Generate answer YOU CAN ADD 'secret' prompt instructions here if you want to guide the model's behavior further
-        prompt = f"""Use this context to answer. If unsure, say so. 
+        # Generate answer
+        prompt = f"""Use this context to answer. If unsure, say so.
 
 Context:
 {context}
@@ -103,6 +107,44 @@ Answer:"""
             return f"{answer}\n\n📚 Sources: {', '.join(set(sources))}"
 
         return answer
+
+    def serve(self, port=8000):
+        """Serve web/index.html and answer questions at /ask (stdlib only)"""
+        rag = self
+        web_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
+
+        class Handler(BaseHTTPRequestHandler):
+            def _send(self, code, body, ctype):
+                self.send_response(code)
+                self.send_header("Content-Type", ctype)
+                self.end_headers()
+                self.wfile.write(body)
+
+            def do_GET(self):
+                name = self.path.split("?")[0].lstrip("/") or "index.html"
+                path = os.path.normpath(os.path.join(web_dir, name))
+                if not path.startswith(web_dir + os.sep) or not os.path.isfile(path):
+                    return self._send(404, b"Not found", "text/plain")
+                ctype = mimetypes.guess_type(path)[0] or "application/octet-stream"
+                with open(path, "rb") as f:
+                    self._send(200, f.read(), ctype)
+
+            def do_POST(self):
+                try:
+                    length = int(self.headers.get("Content-Length", 0))
+                    question = json.loads(self.rfile.read(length)).get("question", "").strip()
+                    result = str(rag.ask(question, show_sources=True))
+                    answer, _, sources = result.partition("\n\n📚 Sources:")
+                    out = {"answer": answer.strip(), "sources": sources.strip()}
+                except Exception as e:
+                    out = {"error": str(e)}
+                self._send(200, json.dumps(out).encode(), "application/json")
+
+            def log_message(self, *args):
+                pass  # keep the terminal quiet
+
+        print(f"🌐 Chat running at http://127.0.0.1:{port}  (Ctrl+C to stop)")
+        HTTPServer(("127.0.0.1", port), Handler).serve_forever()
 
     def stats(self):
         """Show database stats"""
@@ -138,8 +180,11 @@ if __name__ == "__main__":
         elif command == "stats":
             rag.stats()
 
+        elif command == "serve":
+            rag.serve()
+
         else:
-            print("Commands: build, ask, stats")
+            print("Commands: build, ask, stats, serve")
 
     else:
         # Interactive mode
