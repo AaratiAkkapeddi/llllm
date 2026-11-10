@@ -5,7 +5,12 @@ No server, no internet required after setup
 """
 
 import chromadb
-from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    DirectoryLoader,
+    TextLoader,
+    CSVLoader,
+)
 # from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import OllamaEmbeddings
@@ -30,12 +35,23 @@ class SimpleRAG:
     def build(self):
         """Build database from PDFs (run once)"""
         print("📂 Loading PDFs...")
-        loader = DirectoryLoader(
-            self.docs_path,
-            glob="**/*.pdf",
-            loader_cls=PyPDFLoader
-        )
-        docs = loader.load()
+        loaders = [
+            DirectoryLoader(self.docs_path, glob="**/*.pdf", loader_cls=PyPDFLoader),
+            DirectoryLoader(
+                self.docs_path,
+                glob="**/*.md",
+                loader_cls=TextLoader,
+                loader_kwargs={"encoding": "utf-8"},
+            ),
+            DirectoryLoader(
+                self.docs_path,
+                glob="**/*.txt",
+                loader_cls=TextLoader,
+                loader_kwargs={"encoding": "utf-8"},
+            ),
+            DirectoryLoader(self.docs_path, glob="**/*.csv", loader_cls=CSVLoader),
+        ]
+        docs = [doc for loader in loaders for doc in loader.load()]
 
         if not docs:
             print(f"❌ No PDFs found in {self.docs_path}/")
